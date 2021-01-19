@@ -57,7 +57,7 @@ class ScriptablePlayer: NSObject, AnyPlayer {
     }
     
     let appName: String
-    let playScript, pauseScript, playerPositionScript, playerStateScript, durationScript, volumeScript, currentTrackScript: NSAppleScript?
+    let playScript, pauseScript, playerPositionScript, playerStateScript, durationScript, volumeScript, currentTrackScript, previousTrackScript, nextTrackScript: NSAppleScript?
     
     init(appName: String) {
         self.appName = appName
@@ -69,6 +69,8 @@ class ScriptablePlayer: NSObject, AnyPlayer {
         durationScript = NSAppleScript(source: scriptPrefix + "get the duration of the current track")
         volumeScript = NSAppleScript(source: scriptPrefix + "get the sound volume")
         currentTrackScript = NSAppleScript(source: scriptPrefix + "get {the name of the current track, the artist of the current track, the album of the current track}")
+        previousTrackScript = NSAppleScript(source: scriptPrefix + "previous track")
+        nextTrackScript = NSAppleScript(source: scriptPrefix + "next track")
         super.init()
         
         let runScript = NSAppleScript(source: "tell application \"\(appName)\" to run")
@@ -86,6 +88,16 @@ class ScriptablePlayer: NSObject, AnyPlayer {
     
     private func setPlayerPositionScript(_ seconds: Double) -> NSAppleScript? {
         return NSAppleScript(source: "if application \"\(appName)\" is running then tell application \"\(appName)\" to set the player position to \(seconds)")
+    }
+    
+    func previousSong() {
+        previousTrackScript?.executeAndReturnError(nil)
+        update(force: true)
+    }
+    
+    func nextSong() {
+        nextTrackScript?.executeAndReturnError(nil)
+        update(force: true)
     }
     
     var currentItemDuration: CMTime? {
@@ -119,12 +131,12 @@ class ScriptablePlayer: NSObject, AnyPlayer {
     
     func play() {
         playScript?.executeAndReturnError(nil)
-        update()
+        update(force: true)
     }
     
     func pause() {
         pauseScript?.executeAndReturnError(nil)
-        update()
+        update(force: true)
     }
     
     func seek(to time: CMTime) {
@@ -165,7 +177,7 @@ class ScriptablePlayer: NSObject, AnyPlayer {
         }
     }
     
-    @objc func update() {
+    @objc func update(force: Bool = false) {
         if status != .readyToPlay {
             status = .readyToPlay
         }
@@ -183,7 +195,7 @@ class ScriptablePlayer: NSObject, AnyPlayer {
         }
         
         let time = CMTime(seconds: playerPosition, preferredTimescale: 1000)
-        if lastPlayerSeconds != Int(time.seconds) {
+        if force || lastPlayerSeconds != Int(time.seconds) {
             lastPlayerSeconds = Int(time.seconds)
             timeObservers.forEach({ $0.callback(time) })
         }

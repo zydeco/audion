@@ -26,6 +26,9 @@ protocol AnyPlayer: NSObject {
     var currentItemCommonMetadata: [AVMetadataItem]? { get }
     
     var isRemoteControl: Bool { get }
+    
+    func nextSong()
+    func previousSong()
 }
 
 extension AVPlayer: AnyPlayer {
@@ -40,4 +43,7 @@ extension AVPlayer: AnyPlayer {
     var isRemoteControl: Bool {
         false
     }
+    
+    func nextSong() { /* Not supported */ }
+    func previousSong() { /* Not supported */ }
 }

@@ -262,9 +262,13 @@ class Player: NSObject, AudionFaceViewDelegate {
         self.stop()
     }
 
-    func rewind(_ sender: AudionFaceView) {}
+    func rewind(_ sender: AudionFaceView) {
+        self.avPlayer?.previousSong()
+    }
 
-    func fastForward(_ sender: AudionFaceView) {}
+    func fastForward(_ sender: AudionFaceView) {
+        self.avPlayer?.nextSong()
+    }
 
     func volumeChanged(to volume: Double, sender: AudionFaceView) {
         if volume > 0 {
