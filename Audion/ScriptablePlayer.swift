@@ -61,13 +61,14 @@ class ScriptablePlayer: NSObject, AnyPlayer {
     
     init(appName: String) {
         self.appName = appName
-        playScript = NSAppleScript(source: "if application \"\(appName)\" is running then tell application \"\(appName)\" to play")
-        pauseScript = NSAppleScript(source: "if application \"\(appName)\" is running then tell application \"\(appName)\" to pause")
-        playerPositionScript = NSAppleScript(source: "if application \"\(appName)\" is running then tell application \"\(appName)\" to get the player position")
-        playerStateScript = NSAppleScript(source: "if application \"\(appName)\" is running then tell application \"\(appName)\" to get the player state")
-        durationScript = NSAppleScript(source: "if application \"\(appName)\" is running then tell application \"\(appName)\" to get the duration of the current track")
-        volumeScript = NSAppleScript(source: "if application \"\(appName)\" is running then tell application \"\(appName)\" to get the sound volume")
-        currentTrackScript = NSAppleScript(source: "if application \"\(appName)\" is running then tell application \"\(appName)\" to get {the name of the current track, the artist of the current track, the album of the current track}")
+        let scriptPrefix = "if application \"\(appName)\" is running then tell application \"\(appName)\" to "
+        playScript = NSAppleScript(source: scriptPrefix + "play")
+        pauseScript = NSAppleScript(source: scriptPrefix + "pause")
+        playerPositionScript = NSAppleScript(source: scriptPrefix + "get the player position")
+        playerStateScript = NSAppleScript(source: scriptPrefix + "get the player state")
+        durationScript = NSAppleScript(source: scriptPrefix + "get the duration of the current track")
+        volumeScript = NSAppleScript(source: scriptPrefix + "get the sound volume")
+        currentTrackScript = NSAppleScript(source: scriptPrefix + "get {the name of the current track, the artist of the current track, the album of the current track}")
         super.init()
         
         let runScript = NSAppleScript(source: "tell application \"\(appName)\" to run")
