@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		28094BD825B63EA000ADB6DE /* PlayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28094BD725B63EA000ADB6DE /* PlayerProtocol.swift */; };
 		30246F7F24DDB63E00CDCD4D /* OpenStreamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30246F7E24DDB63E00CDCD4D /* OpenStreamViewController.swift */; };
 		302BB1DE24E1A1C9007B102B /* AppearancePrefsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302BB1DC24E1A1C9007B102B /* AppearancePrefsViewController.swift */; };
 		30A32E19246D7EB800D8DC1B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A32E18246D7EB800D8DC1B /* AppDelegate.swift */; };
@@ -59,6 +60,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		28094BD725B63EA000ADB6DE /* PlayerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerProtocol.swift; sourceTree = "<group>"; };
 		30246F7E24DDB63E00CDCD4D /* OpenStreamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenStreamViewController.swift; sourceTree = "<group>"; };
 		302BB1DC24E1A1C9007B102B /* AppearancePrefsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearancePrefsViewController.swift; sourceTree = "<group>"; };
 		30A32E15246D7EB800D8DC1B /* Audion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Audion.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -118,6 +120,7 @@
 				30246F7E24DDB63E00CDCD4D /* OpenStreamViewController.swift */,
 				30A32E3C246D88ED00D8DC1B /* Player.swift */,
 				30A32E1A246D7EB800D8DC1B /* ViewController.swift */,
+				28094BD725B63EA000ADB6DE /* PlayerProtocol.swift */,
 			);
 			path = Audion;
 			sourceTree = "<group>";
@@ -239,6 +242,7 @@
 				30A32E3B246D86AF00D8DC1B /* AudionWindow.swift in Sources */,
 				30A32E19246D7EB800D8DC1B /* AppDelegate.swift in Sources */,
 				30246F7F24DDB63E00CDCD4D /* OpenStreamViewController.swift in Sources */,
+				28094BD825B63EA000ADB6DE /* PlayerProtocol.swift in Sources */,
 				302BB1DE24E1A1C9007B102B /* AppearancePrefsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

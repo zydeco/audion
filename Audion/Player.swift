@@ -28,7 +28,7 @@ class Player: NSObject, AudionFaceViewDelegate {
     let supportsRewind = true
     let supportsFastForward = true
 
-    private var avPlayer: AVPlayer? = nil {
+    private var avPlayer: AnyPlayer? = nil {
         willSet {
             if let avPlayer = self.avPlayer {
                 avPlayer.removeObserver(self, forKeyPath: "rate")
@@ -58,7 +58,7 @@ class Player: NSObject, AudionFaceViewDelegate {
         self.avPlayer?.automaticallyWaitsToMinimizeStalling = true
         self.faceView?.stop()
 
-        let duration = self.avPlayer?.currentItem?.asset.duration.seconds ?? 0.0
+        let duration = self.avPlayer?.currentItemDuration?.seconds ?? 0.0
 
         if duration.isFinite {
             self.faceView?.durationInSeconds = Int(duration)
@@ -77,8 +77,7 @@ class Player: NSObject, AudionFaceViewDelegate {
             self.faceView?.animationType = .connecting
         }
 
-        let assetLength = Float(asset.duration.value) / Float(asset.duration.timescale)
-        return (assetLength > 0)
+        return duration > 0.0
     }
 
     var isPlaying: Bool {
@@ -178,7 +177,7 @@ class Player: NSObject, AudionFaceViewDelegate {
     }
 
     private func updateMetadata() {
-        let duration = self.avPlayer?.currentItem?.asset.duration.seconds ?? 0.0
+        let duration = self.avPlayer?.currentItemDuration?.seconds ?? 0.0
 
         if duration.isFinite {
             if self.streaming && duration == 0 {
@@ -201,7 +200,7 @@ class Player: NSObject, AudionFaceViewDelegate {
 
         self.faceView?.artistText = nil
 
-        for datum in self.avPlayer?.currentItem?.asset.commonMetadata ?? [] {
+        for datum in self.avPlayer?.currentItemCommonMetadata ?? [] {
             if datum.commonKey == AVMetadataKey.commonKeyTitle, let title = datum.value as? String {
                 self.faceView?.artistText = title
             } else if datum.commonKey == AVMetadataKey.commonKeyArtist, let value = datum.value as? String {
