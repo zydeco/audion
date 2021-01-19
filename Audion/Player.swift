@@ -51,9 +51,14 @@ class Player: NSObject, AudionFaceViewDelegate {
     private var startedStream = false
 
     func open(url: URL) -> Bool {
-        let asset = AVURLAsset(url: url)
-        let playerItem = AVPlayerItem(asset: asset)
-        self.avPlayer = AVPlayer(playerItem: playerItem)
+        if url.scheme == "osascript" {
+            let appName = String(url.absoluteString.split(separator: ":").last ?? "Music")
+            self.avPlayer = ScriptablePlayer(appName: appName)
+        } else {
+            let asset = AVURLAsset(url: url)
+            let playerItem = AVPlayerItem(asset: asset)
+            self.avPlayer = AVPlayer(playerItem: playerItem)
+        }
         self.avPlayer?.volume = UserDefaults.standard.float(forKey: AudionVolumePrefKey)
         self.avPlayer?.automaticallyWaitsToMinimizeStalling = true
         self.faceView?.stop()
@@ -75,6 +80,13 @@ class Player: NSObject, AudionFaceViewDelegate {
         if ( url.scheme != "file" ) {
             self.streaming = true
             self.faceView?.animationType = .connecting
+        }
+        
+        if let player = self.avPlayer, player.isRemoteControl {
+            player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1.0, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: DispatchQueue.main) { time in
+                self.updateMetadata()
+                self.faceView?.timeInSeconds = Int(time.seconds)
+            }
         }
 
         return duration > 0.0
@@ -223,9 +235,11 @@ class Player: NSObject, AudionFaceViewDelegate {
             self.faceView?.albumText = nil
         }
 
-        self.avPlayer?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1.0, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: DispatchQueue.main) { time in
-            if self.avPlayer != nil {
-                self.faceView?.timeInSeconds = Int(time.seconds)
+        if let player = self.avPlayer, !player.isRemoteControl {
+            player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1.0, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: DispatchQueue.main) { time in
+                if self.avPlayer != nil {
+                    self.faceView?.timeInSeconds = Int(time.seconds)
+                }
             }
         }
     }

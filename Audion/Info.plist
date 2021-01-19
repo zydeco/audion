@@ -37,5 +37,7 @@
 	</dict>
 	<key>NSSupportsSuddenTermination</key>
 	<true/>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>Apple Events are used to control music playing in Spotify or Music.</string>
 </dict>
 </plist>
