@@ -148,8 +148,8 @@ class ScriptablePlayer: NSObject, AnyPlayer {
     
     func addPeriodicTimeObserver(forInterval interval: CMTime, queue: DispatchQueue?, using block: @escaping (CMTime) -> Void) -> Any {
         if updateTimer == nil {
-            updateTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { (_) in
-                self.update()
+            updateTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { [weak self] (_) in
+                self?.update()
             })
         }
         
