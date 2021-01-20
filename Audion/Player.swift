@@ -51,13 +51,17 @@ class Player: NSObject, AudionFaceViewDelegate {
     private var startedStream = false
 
     func open(url: URL) -> Bool {
+        self.avPlayer = nil
+        
         if url.scheme == "osascript" {
             let appName = String(url.absoluteString.split(separator: ":").last ?? "Music")
             self.avPlayer = ScriptablePlayer(appName: appName)
+            AppDelegate.shared.markMenuItem(forAppName: appName)
         } else {
             let asset = AVURLAsset(url: url)
             let playerItem = AVPlayerItem(asset: asset)
             self.avPlayer = AVPlayer(playerItem: playerItem)
+            AppDelegate.shared.markMenuItem(forAppName: nil)
         }
         self.avPlayer?.volume = UserDefaults.standard.float(forKey: AudionVolumePrefKey)
         self.avPlayer?.automaticallyWaitsToMinimizeStalling = true

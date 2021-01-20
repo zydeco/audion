@@ -21,10 +21,13 @@ import Cocoa
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
+    class var shared: AppDelegate { return NSApp.delegate as! AppDelegate }
+    
     var preferencesWindowController: NSWindowController? = nil
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         UserDefaults.standard.register(defaults: [AudionVolumePrefKey: 0.5])
+        setupAppMenuItems()
     }
 
     public var appSupportDirectory: URL? {
@@ -78,14 +81,53 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         self.preferencesWindowController?.window?.makeKeyAndOrderFront(self)
     }
-
-    func application(_ sender: NSApplication, openFile filename: String) -> Bool {
+    
+    private var viewController: ViewController? {
         for window in NSApp.windows {
             if let viewController = window.contentViewController as? ViewController {
-                return viewController.open(url: URL(fileURLWithPath: filename))
+                return viewController
             }
         }
-        return false
+        return nil
+    }
+
+    func application(_ sender: NSApplication, openFile filename: String) -> Bool {
+        return viewController?.open(url: URL(fileURLWithPath: filename)) ?? false
+    }
+    
+    
+    @IBAction func openAppleScript(_ sender: Any?) {
+        guard let appName = (sender as? NSMenuItem)?.title,
+              let url = URL(string: "osascript:\(appName)") else {
+            return
+        }
+        
+        let _ = viewController?.open(url: url)
+    }
+    
+    @IBOutlet var appleScriptAppsMenuItem: NSMenuItem?
+    @IBOutlet var dockMenu: NSMenu?
+
+    private func setupAppMenuItems() {
+        let appleScriptAppsSubmenu = appleScriptAppsMenuItem?.submenu
+        appleScriptAppsSubmenu?.removeAllItems()
+        let bundleIdentifiers = ["com.apple.Music", "com.spotify.client", "com.apple.iTunes"]
+        let workspace = NSWorkspace.shared
+        for bundleIdentifier in bundleIdentifiers {
+            if let appUrl = workspace.urlForApplication(withBundleIdentifier: bundleIdentifier) {
+                let appName = appUrl.deletingPathExtension().lastPathComponent
+                let menuItem = NSMenuItem(title: appName, action: #selector(AppDelegate.openAppleScript(_:)), keyEquivalent: "")
+                menuItem.image = workspace.icon(forFile: appUrl.path)
+                appleScriptAppsSubmenu?.addItem(menuItem)
+            }
+        }
+        dockMenu?.addItem(appleScriptAppsMenuItem!.copy() as! NSMenuItem)
+    }
+    
+    func markMenuItem(forAppName appName: String?) {
+        for menuItem in appleScriptAppsMenuItem?.submenu?.items ?? [] {
+            menuItem.state = (menuItem.title == appName) ? .on : .off
+        }
     }
 }
 

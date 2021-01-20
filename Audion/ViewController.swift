@@ -149,8 +149,10 @@ class ViewController: NSViewController, NSUserInterfaceValidations {
 
     func open(url: URL) -> Bool {
         if self.player.open(url: url) {
-            NSDocumentController.shared.noteNewRecentDocumentURL(url)
-            self.player.play()
+            if url.scheme != "osascript" {
+                NSDocumentController.shared.noteNewRecentDocumentURL(url)
+                self.player.play()
+            }
             return true
         }
 
