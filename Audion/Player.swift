@@ -123,13 +123,15 @@ class Player: NSObject, AudionFaceViewDelegate {
     func stop() {
         self.avPlayer?.pause()
 
-        if !self.isScrubbing {
-            self.faceView?.stop()
-        }
+        if self.avPlayer?.isRemoteControl != true {
+            if !self.isScrubbing {
+                self.faceView?.stop()
+            }
 
-        self.startedStream = false
-        self.streaming = false
-        self.avPlayer = nil
+            self.startedStream = false
+            self.streaming = false
+            self.avPlayer = nil
+        }
     }
 
     func togglePlayPause() {
